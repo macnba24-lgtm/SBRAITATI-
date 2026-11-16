@@ -2,9 +2,13 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#170d24">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sbraitati">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAFOUlEQVR42u2dMY7VMBRFPVYkJDQ0NDSIip6OLbAFFkPJYtgCW6BjC4h6qhHSdBQ0X/+HjBM79r3P55aj/zMvzsl97zv2y92bV+8TQmvKDAECDgQcCDgQcCDgQMCBgAMBBwIOBBwIAQcCDgQcCDgQcCDgQMCBgAMBBwIOhIADAQcCDgQcCDgQcCBtLdOe+ePTQ/mH71+8Bg5QKP36DLgsAFF/8KigLDDR8D8Go2QBi+YBhEFkgQmMJCYcNVh8/fG5/MNfPn6b0EjuTNs+HcBiFw3NWXFExBKOcjIaAlEPih0fZnAUYtGBicOUGCHiBEcJGUOw2IuICx8ecFhgEQ8RAzieJUMKi12IiPOhDsc2GbJYlCOizIcuHAGwcEckQ0YfbcesNsmr6xwbI+WIRbmFqPlHhgwdC1HzjwwZ8GGQVv43LpGwKEwxIvklQ4aghYj4R4YM+PDbmjADGeJnmjVtYx4yNs53uHlkyIAPRTg0pwUTK2Rla445bUPz3DMJheSiBQdkWPDBLnukBAe24WIeGTLgg7SCtOHANrzMA+dAAnBgG3bmgXMgSTiwDfFRWtyfHm0s5u42rP1jeHx66LCUsNMa0ls4KkdtV4eMk65Qzxhu/1cHOBY72zjQOOXfV8Y2b2keQwfzyF559Fj7pfrvDo9hSOWxBFjI//jp7e0f77//Xj3CSemsZwwpzL6VVtMbt1dl9XqUXKGGvtUzhlUuT80sA+CoH5fCS7JxeWLEcDYc2S6bHLgqt9/am/sVYkgs9tk1vt2+qxZDBDjqf8Re3l71I3t5hPIbVyGGIWvTM1Pmial0x7RydlYuOb5CDNQcE1UMLpUHj+wRcCApOJo/iUWrY3jeDxacA/nDsfoQq/NxFGIAjk5pqOT4CjEABwKOihur3o0vj1B+yyrEABzxKwaXasMGjqvb69j4Vq6lUIgBOEqvTfnluf3wsauiEEMKs0yw23aE8vWbUWM4aT2YExz1zzCb3K/DY+gGR55nQUMrJ1eIIbE1YWN8x+54U4gBOJ4f64F7ZRViAA71OzLq0+YTa47bKkl/MX4y3PZ33tYVnq0g4EDAgYADRYSDmtRo9M6FQ/MV7ZE0+y57RM2BgIOyw2fcsnVSpOAgraCZag4yi8WI5QDuR05Jwdpbp9EthZPPc/z+TSa7ppVTz0QzSZ0aVR8zzu7Dp1y+uJ9gpkyj9B5cc5xReVyN+4eX73SG9eefX+e9CKBbgR9knkOKDMF4DOBYRZ45D03bYIYUKcGBebjYxhjngA8LMkgrSA8OzEPfNkY6R1s+ruYVktg8hyMZqfMkWCprvVs+ZWRhNvWnMwqObP3QWX8Hc32EAxc8ZMFFCWH6XuyKTSqhqPxaicqHOxmDa46GxUfIZ8vD4cjKK95m+HErS4bQJNicfCiToZJWSt4rEyzFbECvsx47u6yojmQhFmQoPlsJz4cLGXJppfC9ZaYpZhtuwd092XHHjqOF2JGh6xyRLMQRCw84Sl6NKYvIsw4nvlHUAI7CV6dKIVKS+PS3EHvAYYRIDCz84Ch/+/IQRArLZKOeA2Zw7H1BdwdKyn862bWisITj2Avcx3Z8cGxS4grHYUQarrcI37vGG456RBItjVLcl/FcXgMRSsK0uVpSitYmayAiwbqfhYJjlJFE7Yi3pDRFv73moMzQInFJadLGjLtwmbNb5pISfTxRYpc9Ag4EHAg4EHAg4EDAgYADAQcCDoSAAwEHAg4EHAg4EHAg4EDAgYADAQdCwIGAAwEHAg4EHAg4EHAg4EDAgYADTa6/KB3IVPgZTosAAAAASUVORK5CYII=">
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0}[hidden]{display:none!important}</style>
 <title>Gli Sbraitati</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -257,6 +261,9 @@ h1 span{color:var(--ink)}
 #xhair::before{left:10px;top:2px;width:2px;height:18px}
 #xhair::after{top:10px;left:2px;height:2px;width:18px}
 #xhair[hidden]{display:none}
+html,body{touch-action:none;-ms-touch-action:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,input,select,textarea,label,a{touch-action:manipulation}
+input,select,textarea{font-size:16px}
 #povHud{position:absolute;right:calc(env(safe-area-inset-right,0px) + 10px);top:calc(env(safe-area-inset-top,0px) + 66px);width:min(34vw,170px);pointer-events:none;z-index:5}
 #povHud[hidden]{display:none}
 #povHud .pb{position:relative;height:16px;background:#2a1f3d;border:3px solid var(--line);border-radius:9px;overflow:hidden;box-shadow:0 3px 0 var(--line)}
@@ -2992,10 +2999,10 @@ function supBarbitar(){
   const pose = hero.getObjectByName("pose"), beard = hero.getObjectByName("beardLong");
   if(!pose || !beard) return;
   for(const s of BARB) if(s.g === hero){ s.t = 0; return; }
-  const sp = {actor:botCtx || null, g:hero, pose, beard, t:0, dur:5, tick:0, R:3.4*(hasTr("lunga") ? 1.3 : 1), src:null, gain:null, t0:0, len:0};
+  const sp = {actor:botCtx || null, g:hero, pose, beard, t:0, dur:7.68, tick:0, R:3.4*(hasTr("lunga") ? 1.3 : 1), src:null, gain:null, t0:0, len:0};
   if(playSample("barbheli", .85)){ sp.src = lastSrc; sp.gain = lastGain; sp.vol = lastGain.gain.value; sp.src.loop = true; sp.t0 = ac.currentTime; sp.len = SAMPLES.barbheli.duration; }
   BARB.push(sp);
-  if(!botCtx){ barbSpinT = 5; mouthT = 1.6; shake = Math.max(shake, .35); }
+  if(!botCtx){ barbSpinT = 7.68; mouthT = 1.6; shake = Math.max(shake, .35); }
   shockRing(hero.position.x, hero.position.z, 3.4, 0x553823, .45, hero.position.y);
   if(!sp.src){ sfx("whoosh"); sfx("super"); }
 }
@@ -3196,7 +3203,7 @@ const CHARS = [
    atk:["Sburna", "colpo di sburna: rallenta, avvelena per 3 secondi e lascia sburna a terra"], sup:["NNN", "grande pozza di sburna che rallenta e avvelena per 4 secondi"],
    build:buildSpettro, aim:{type:"line", range:12, ring:0}, superRing:0, attack:atkSpettro, super:supSpettro},
   {id:"barbitar", name:"BARBITAR", role:"Uomo scimmia", color:"#f0a060", hp:2800, spd:5.2, reload:1.2, superNeed:6800,
-   atk:["Barbata", "allunga la barba e la usa come una frusta: colpisce tutti gli zombie in linea fino a 6,5 m e li respinge"], sup:["Peluria Roteante", "per 5 secondi gira su se stesso con la barba lunghissima, facendo danni continui a tutto ciò che c'è attorno"],
+   atk:["Barbata", "allunga la barba e la usa come una frusta: colpisce tutti gli zombie in linea fino a 6,5 m e li respinge"], sup:["Peluria Roteante", "per 7,7 secondi gira su se stesso con la barba lunghissima, facendo danni continui a tutto ciò che c'è attorno"],
    build:buildBarbitar, aim:{type:"line", range:6.5, ring:0}, superRing:3.4, attack:atkBarbitar, super:supBarbitar},
   {id:"kenz", name:"ELETTROSKENZ", role:"Petto elettrico", color:"#b04dff", hp:2300, spd:5.4, reload:1.15, superNeed:6200,
    atk:["Tettaser", "spara due scariche viola dai capezzoli fino a 10 m: colpisce il primo zombie e rimbalza su quello più vicino"], sup:["Kenzocalisse", "lancia un grappolo di fulmini dai capezzoli che avanza lentamente per 4,5 secondi, folgorando e rallentando tutti gli zombie che incontra"],
@@ -3983,7 +3990,7 @@ function updateHUD(){
 }
 
 let camMode = "gta", camYaw = Math.PI, camDrag = false, heroMoveX = 0, heroMoveZ = 0, heroMoving = false;
-let camPitch = -.12, povHidden = false;
+let camPitch = -.12, povHidden = false, camPrevT = 0;
 try{ const v = localStorage.getItem("zt-cam"); camMode = v === "top" || v === "pov" ? v : "gta"; }catch(_){}
 function povActive(){ return camMode === "pov" && state === "play" && !heroDown && !heroTomb && !!HP; }
 function povFwd(){ return new T.Vector3(Math.sin(camYaw), 0, Math.cos(camYaw)); }
@@ -3995,7 +4002,8 @@ function camRel(x, z){
 }
 function applyCamMode(){
   document.body.dataset.cam = camMode;
-  const t = "Visuale: " + (camMode === "gta" ? "GTA" : camMode === "pov" ? "POV (prima persona)" : "dall'alto");
+  const t = "Visuale " + (camMode === "gta" ? "GTA" : camMode === "pov" ? "POV" : "dall'alto"); camPrevT = 1.5;
+  { const b2 = $("#camBtn2"); if(b2) b2.textContent = t; }
   if(camMode !== "pov" && document.pointerLockElement){ try{ document.exitPointerLock(); }catch(_){} }
   const b = $("#camBtn"); if(b) b.textContent = t;
   if(typeof resize === "function") resize();
@@ -5612,8 +5620,11 @@ $("#gfxBtn").addEventListener("click", () => { SET.gfx = (SET.gfx + 2) % 3; save
 $("#nightBtn").addEventListener("click", () => { nightFix = !nightFix; try{ localStorage.setItem("zt-nightfix", nightFix ? "1" : "0"); }catch(_){} refreshMenuExtras(); });
 $("#modeBtn").addEventListener("click", () => { mode = mode === "facile" ? "orig" : "facile"; try{ localStorage.setItem("zt-mode", mode); }catch(_){} refreshMenuExtras(); });
 function fsActive(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+const IPHONE = /iPhone|iPod/.test(navigator.userAgent), STANDALONE = navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+if(STANDALONE){ ["#fsBtn", "#fsMenuBtn"].forEach(q => { const b = $(q); if(b) b.hidden = true; }); }
 function toggleFs(){
   const el = document.documentElement;
+  if(IPHONE && !fsActive()){ const n = $("#fsNote"); n.textContent = "Su iPhone i browser (Safari, Edge, Chrome…) non permettono lo schermo intero ai siti. Per giocare a tutto schermo: tocca Condividi → «Aggiungi alla schermata Home», poi apri il gioco dall'icona."; n.hidden = false; if(state === "play") toast("iPhone: Condividi → Aggiungi a Home"); return; }
   const fail = () => { const n = $("#fsNote"); n.textContent = "Qui dentro lo schermo intero è bloccato: apri il gioco con «Apri nel browser» oppure ruota il telefono, il gioco si adatta da solo."; n.hidden = false; if(state === "play") toast("Schermo intero non disponibile qui"); };
   try{
     if(fsActive()){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
@@ -5889,7 +5900,10 @@ function frame(now){
   requestAnimationFrame(frame);
   try{ devTick(now); }catch(_){}
   const dt = Math.min(0.05, (now-last)/1000); last = now;
-  if(paused || userPause) return;
+  if(paused || userPause){
+    if(userPause && state === "play" && camPrevT > 0){ camPrevT -= dt; try{ updateCamera(dt); updateHUD(); renderer.render(scene, camera); }catch(_){} }
+    return;
+  }
   time += dt;
   if(state === "menu") updateMenu(dt);
   else if(state === "play"){ updateHero(dt); updateWaves(dt); updateTasks(dt); }
@@ -5928,5 +5942,23 @@ requestAnimationFrame(frame);
 })();
 </script>
 
+<script>
+(function(){
+  const no = e => { if(e.cancelable) e.preventDefault(); };
+  ["gesturestart","gesturechange","gestureend"].forEach(n => document.addEventListener(n, no, {passive:false}));
+  document.addEventListener("dblclick", no, {passive:false});
+  document.addEventListener("touchstart", e => { if(e.touches.length > 1) no(e); }, {passive:false});
+  document.addEventListener("touchmove", e => { if(e.touches.length > 1 || (e.scale && e.scale !== 1)) no(e); }, {passive:false});
+  let lastEnd = 0;
+  document.addEventListener("touchend", e => {
+    const now = Date.now(), t = e.target;
+    const inter = t && t.closest && t.closest("button,input,select,textarea,label,a");
+    if(now - lastEnd < 350 && !inter) no(e);
+    lastEnd = now;
+  }, {passive:false});
+  window.addEventListener("wheel", e => { if(e.ctrlKey) no(e); }, {passive:false});
+  window.addEventListener("keydown", e => { if((e.ctrlKey || e.metaKey) && ["+","-","=","_","0"].includes(e.key)) no(e); });
+})();
+</script>
 </body>
 </html>
