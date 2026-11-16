@@ -251,6 +251,23 @@ h1 span{color:var(--ink)}
 .stepper b{font-family:var(--display);font-weight:400;font-size:22px;min-width:22px;text-align:center;font-variant-numeric:tabular-nums}
 @media (orientation:landscape) and (max-height:540px){ #useBtn{bottom:calc(env(safe-area-inset-bottom,0px) + 112px);font-size:15px;padding:5px 12px} .stepper button{width:28px;height:28px} .lobby .lab small{display:none} }
 .dmg[data-k="big"]{color:#ffb02e;font-size:18px}
+.dmg[data-k="assist"]{color:#7ad8ff;font-size:13px}
+#xhair{position:fixed;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;pointer-events:none;z-index:5}
+#xhair::before,#xhair::after{content:"";position:absolute;background:#fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.55);border-radius:2px}
+#xhair::before{left:10px;top:2px;width:2px;height:18px}
+#xhair::after{top:10px;left:2px;height:2px;width:18px}
+#xhair[hidden]{display:none}
+#povHud{position:absolute;right:calc(env(safe-area-inset-right,0px) + 10px);top:calc(env(safe-area-inset-top,0px) + 66px);width:min(34vw,170px);pointer-events:none;z-index:5}
+#povHud[hidden]{display:none}
+#povHud .pb{position:relative;height:16px;background:#2a1f3d;border:3px solid var(--line);border-radius:9px;overflow:hidden;box-shadow:0 3px 0 var(--line)}
+#povHud .pb i{display:block;height:100%;width:100%}
+#povHp{background:#8fff3a}
+#povHud .pb b{position:absolute;inset:0;text-align:center;font:700 11px/10px var(--display);color:#fff;text-shadow:0 1px 0 var(--line)}
+#povAmmo{display:flex;gap:4px;margin:6px 0}
+#povAmmo i{flex:1;height:10px;background:#ffad33;border:2px solid var(--line);border-radius:5px}
+#povHud .sp{height:10px}
+#povSup{background:linear-gradient(#d05aff,#8a2ad0);width:0}
+#povHud.ready .sp{box-shadow:0 0 10px 2px #d05aff}
 #mini{position:absolute;left:calc(env(safe-area-inset-left,0px) + 10px);top:calc(env(safe-area-inset-top,0px) + 66px);width:96px;height:96px;border:3px solid var(--line);border-radius:14px;background:#170d24;box-shadow:0 4px 0 var(--line)}
 #bossBar{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);width:min(36vw,320px);text-align:center;font-family:var(--display);font-size:14px;letter-spacing:.06em;color:#ffd0ff;text-shadow:0 2px 0 var(--line)}
 #bossBar .bb{height:14px;margin-top:3px;background:#2a1f3d;border:3px solid var(--line);border-radius:8px;overflow:hidden}
@@ -385,6 +402,8 @@ html,body{touch-action:none;overscroll-behavior:none;-webkit-user-select:none;us
   <div class="hurt" id="hurt"></div>
   <div id="downBox" hidden>A TERRA!<small id="downTxt">Un compagno ti sta venendo a rianimare</small></div>
   <div id="toast"></div>
+  <div id="xhair" hidden></div>
+  <div id="povHud" hidden><div class="pb"><i id="povHp"></i><b id="povHpTxt"></b></div><div id="povAmmo"></div><div class="pb sp"><i id="povSup"></i></div></div>
   <button id="useBtn" hidden><span id="useLab">APRI</span><small id="useCost">1000 punti</small></button>
   <div class="hint" id="hint" hidden>WASD per muoverti · clic per attaccare · Spazio per la super</div>
 </div>
@@ -1856,24 +1875,26 @@ function buildBarbitar(){
 }
 
 
-/* ---------- ElettroKenz (sguardo fulminante) ---------- */
+/* ---------- ElettroSkenz (capezzoli elettrici) ---------- */
 const kBox = new T.BoxGeometry(1, 1, 1), kenzGlow = new T.MeshBasicMaterial({color:0xc46bff}), kenzCore = new T.MeshBasicMaterial({color:0xf3dcff});
 function buildKenz(){
   const {g, P, pose} = rig();
-  const suit = tm(0x1d1a26), plate = tm(0x2b2738), mask = tm(0x16131d), hairM = tm(0x0d0b12), belt = tm(0x0f0d14);
+  const skinK = tm(0xf0a088), nip = tm(0xc0545a), suit = tm(0x1d1a26), plate = tm(0x2b2738), mask = tm(0x16131d), hairM = tm(0x0d0b12), belt = tm(0x0f0d14);
   chibiLegs(pose, P, {legW:1.08, legMat:suit, shoe:"boot", shoeMat:plate, soleMat:belt});
   for(const leg of [P.legL, P.legR]){ const s = add(leg, kBox, kenzGlow, 0, -.2, .2); s.scale.set(.03, .28, .03); const k = add(leg, G.ball, plate, 0, -.3, .1, 1.08); k.scale.set(.12, .1, .08); }
   const upper = chibiUpper(pose, P, {torsoW:1.18, torsoMat:suit, sleeveMat:plate, foreMat:suit, handMat:belt, fist:true, armW:1.12, shX:.44, beltMat:belt});
   for(const sx of [-1,1]){
     const pad = add(upper, roundBoxGeo(.3, .14, .32, .05), plate, .43*sx, 1.22, 0, 1.08); pad.rotation.z = -.35*sx;
-    const pec = add(upper, G.ball, plate, .14*sx, 1.03, .3, 1.05); pec.scale.set(.17, .11, .07);
-    const strap = add(upper, kBox, belt, .2*sx, .95, .35); strap.scale.set(.05, .42, .03); strap.rotation.z = .5*sx;
+    const pec = add(upper, G.ball, skinK, .14*sx, 1.03, .31, 1.05); pec.scale.set(.18, .12, .075);
+    const n = add(upper, G.ball, nip, .15*sx, 1.02, .382); n.scale.set(.032, .03, .015);
+    const ng = add(upper, G.ball, kenzGlow, .15*sx, 1.02, .39); ng.scale.set(.05, .05, .02); ng.name = "kenzNip"; ng.visible = false;
   }
-  for(let r=0;r<3;r++) for(const sx of [-1,1]){ const ab = add(upper, G.ball, plate, .075*sx, .86 - r*.09, .33); ab.scale.set(.06, .038, .025); }
-  const em = new T.Group(); em.position.set(0, .98, .43); upper.add(em);
+  const bare = add(upper, G.ball, skinK, 0, 1.04, .27); bare.scale.set(.3, .15, .1);
+  const rim = add(upper, new T.TorusGeometry(.34, .025, 6, 26), plate, 0, 1.02, .19); rim.scale.set(1, .5, 1); rim.rotation.x = -.12;
+  const em = new T.Group(); em.position.set(0, .86, .4); em.scale.setScalar(.7); upper.add(em);
   const bar = (x, y, l, rz) => { const b = add(em, kBox, kenzGlow, x, y, 0); b.scale.set(.045, l, .04); b.rotation.z = rz; };
   bar(0, -.06, .24, 0); bar(-.075, .1, .2, .75); bar(.075, .1, .2, -.75);
-  const buckle = add(upper, kBox, kenzGlow, 0, .7, .42); buckle.scale.set(.08, .05, .02);
+  const buckle = add(upper, kBox, kenzGlow, 0, .64, .42); buckle.scale.set(.08, .05, .02);
   for(const arm of [P.armL, P.armR]){ const l = add(arm, kBox, kenzGlow, 0, -.28, .155); l.scale.set(.03, .28, .03); }
   const head = chibiHead(upper, {skin:mask, neckMat:suit, hair:"spiky", hairMat:hairM, scleraMat:mask, pupilR:.0001, eyeR:.06, eyeH:.5, eyeX:.15, brow:false, mouth:"flat", seed:47});
   const cy = .44;
@@ -1883,7 +1904,7 @@ function buildKenz(){
     const b = add(head, kBox, mask, .16*sx, cy + .13, .4, 1.06); b.scale.set(.2, .05, .06); b.rotation.set(-.3, .3*sx, .45*sx);
   }
   P.head = head;
-  const muzzle = new T.Object3D(); muzzle.position.set(0, cy + .04, .45); head.add(muzzle); P.muzzle = muzzle;
+  const muzzle = new T.Object3D(); muzzle.position.set(0, 1.02, .42); upper.add(muzzle); P.muzzle = muzzle;
   return {g, P};
 }
 
@@ -2276,7 +2297,7 @@ function spawnZombie(type, sx, sz, summoned){
 }
 
 function poison(z, dps, dur){
-  if(z.dead || fxOnly) return; if(z.proxy){ netPoisonProxy(z, dps, dur); return; } z.psnBot = botHit; z.psnOwn = botHit ? (statOwner || botCtx) : null;
+  if(z.dead || fxOnly) return; if(z.proxy){ netPoisonProxy(z, dps, dur); return; } z.psnBot = botHit; z.psnOwn = botHit ? (statOwner || botCtx) : null; z.psnRem = remoteHit;
   const active = z.psn > 0;
   z.psnDps = active ? Math.max(z.psnDps, dps) : dps;
   if(!active) z.psnTick = .5;
@@ -2291,6 +2312,7 @@ function damageZombie(z, amt, direct, kx, kz, kind){
   if(instaT > 0 && !remoteHit && kind !== "psn") amt = z.type === "boss" ? Math.max(amt, z.max*.1) : Math.max(amt, z.hp + 1);
   if(!botHit){ ST.dmg += Math.min(amt, Math.max(0, z.hp)); if(direct) ST.hits++; }
   else if(!remoteHit){ const so = statOwner || botCtx; if(so && so.st){ so.st.d += Math.min(amt, Math.max(0, z.hp)); if(z.hp - amt <= 0) so.st.k++; } }
+  { const hk = !botHit ? "me" : remoteHit; if(hk) (z.hitBy || (z.hitBy = new Set())).add(hk); }
   z.hp -= amt; z.flash = kind === "psn" ? 0.06 : 0.14; z.hitS = kind === "psn" ? z.hitS : 1; z.bar.grp.visible = true;
   if(kx || kz){ const m = 1/(z.d.s*z.d.s); z.kx += kx*m; z.kz += kz*m; }
   tmpV2.copy(z.g.position); tmpV2.y += 2.1*z.d.s;
@@ -2299,6 +2321,7 @@ function damageZombie(z, amt, direct, kx, kz, kind){
   if(kind !== "psn") sfx("hit");
   if(z.hp <= 0){
     z.dead = true; z.deathT = 0; z.bar.grp.visible = false; kills++; if(!botHit){ addPts(z.type === "boss" ? 2000 : z.type === "giant" ? 500 : 100); onHeroKill(); } else if(remoteHit) netKill(remoteHit, z.type === "boss" ? 2000 : z.type === "giant" ? 500 : 100); if(z.type === "giant" || z.type === "boss"){ shake = Math.max(shake, z.type === "boss" ? .9 : .5); }
+    awardAssists(z, z.type === "boss" ? 2000 : z.type === "giant" ? 500 : 100, !botHit ? "me" : remoteHit);
     { const x = z.g.position.x, zz = z.g.position.z; shockRing(x, zz, 1.1*z.d.s, 0xa6ff4a, .3);
       if(z.d.bomb){ const dm = z.dmg; later(.12, () => bombBlast(x, zz, dm)); }
       if((z.d.fire || z.burning) && !z.selfBoom){ const dm = z.dmg; later(.1, () => fireBlast(x, zz, dm)); }
@@ -2307,6 +2330,19 @@ function damageZombie(z, amt, direct, kx, kz, kind){
     burst(z.g.position.x, 1, z.g.position.z, 12, 0x9bb08a, 3.5, 0.6);
     burst(z.g.position.x, 1, z.g.position.z, 6, 0xa6ff4a, 2.5, 0.5); killDecal(z, direct);
     sfx("die", botHit ? 1 : Math.pow(2, (Math.min(comboN, 13) - 1)/12));
+  }
+}
+function assistText(pos, a){
+  const p = pos.clone(); p.y += 2.3; dmgText(p, a, "assist");
+  const d = dmgLive[dmgLive.length - 1]; if(d) d.el.textContent = "+" + a + " ASSIST";
+}
+function awardAssists(z, pts, killer){
+  if(!z.hitBy) return;
+  const a = Math.round(pts/3);
+  for(const k of z.hitBy){
+    if(k === killer) continue;
+    if(k === "me"){ addPts(a); ST.ast = (ST.ast || 0) + 1; assistText(z.g.position, a); }
+    else if(NET.mode === "host") netTx(k, {t:"ast", p:a});
   }
 }
 let upg = 0, dblT = 0, instaT = 0, dmgBoostT = 0, rapidT = 0, invT = 0, earned = 0, nightK = 0, boostCache = "";
@@ -3001,9 +3037,11 @@ function updateBarb(dt){
 }
 
 
-/* ---------- ElettroKenz: occhiataccia e Kenzocalisse ---------- */
+/* ---------- ElettroSkenz: Tettaser e Kenzocalisse ---------- */
 const zapG = new T.CylinderGeometry(1, 1, 1, 5, 1, true), ZAPS = [], STORMS = [];
 let kenzStill = 0, kenzLev = 0;
+const NIPF = [];
+function kenzFlash(t){ hero.traverse(o => { if(o.name === "kenzNip"){ o.visible = true; NIPF.push({o, t}); } }); }
 function zapLine(ax, ay, az, bx, by, bz, w, life, jit){
   const g = new T.Group(), mo = new T.MeshBasicMaterial({color:0xb04dff, transparent:true, opacity:.95, depthWrite:false}), mi = new T.MeshBasicMaterial({color:0xf6e6ff, transparent:true, opacity:1, depthWrite:false});
   const dx = bx - ax, dy = by - ay, dz = bz - az, L = Math.hypot(dx, dy, dz), n = Math.max(2, Math.ceil(L/.6)), pts = [];
@@ -3033,7 +3071,7 @@ function atkKenz(dir, dist, target){
   const p = muzzlePos(new T.Vector3()); dir = aimFrom(p, dir, target);
   const R = 10.5, hit = kenzRay(p, dir, R), dmg = 300*(hasTr("sguardo") ? 1.35 : 1);
   const ex = hit.z ? hit.z.g.position.x : p.x + dir.x*hit.d, ez = hit.z ? hit.z.g.position.z : p.z + dir.z*hit.d, ey = hit.z ? zTop(hit.z) - .3 : Math.max(lvlY(ex, ez) + .3, p.y - hit.d*.08);
-  const sx = dir.z*.13, sz = -dir.x*.13;
+  const sx = dir.z*.15, sz = -dir.x*.15; kenzFlash(.18);
   zapLine(p.x + sx, p.y, p.z + sz, ex, ey, ez, .05, .16); zapLine(p.x - sx, p.y, p.z - sz, ex, ey, ez, .05, .16);
   burst(ex, ey, ez, 7, 0xc46bff, 3.2, .3);
   if(hit.z){
@@ -3050,7 +3088,7 @@ function atkKenz(dir, dist, target){
   if(!playSample("kenzzap", .55, .95 + Math.random()*.12)) sfx("pop");
 }
 function supKenz(dir){
-  const p = muzzlePos(new T.Vector3());
+  const p = muzzlePos(new T.Vector3()); kenzFlash(.5);
   const g = new T.Group(); g.position.copy(p);
   const orb = new T.Mesh(G.ball, new T.MeshBasicMaterial({color:0x9b3dff, transparent:true, opacity:.55, depthWrite:false})); orb.scale.setScalar(.6); g.add(orb);
   const core = new T.Mesh(G.ball, kenzCore); core.scale.setScalar(.22); g.add(core);
@@ -3061,6 +3099,7 @@ function supKenz(dir){
   if(!playSample("kenzthunder", 1.1)){ sfx("boom"); sfx("super"); }
 }
 function updateKenz(dt){
+  for(let i=NIPF.length-1;i>=0;i--){ const f = NIPF[i]; f.t -= dt; if(f.t <= 0){ f.o.visible = false; NIPF.splice(i,1); } else f.o.scale.setScalar(.05*(1 + Math.sin(f.t*60)*.25)); }
   for(let i=ZAPS.length-1;i>=0;i--){
     const z = ZAPS[i]; z.t += dt; const k = z.t/z.life;
     if(k >= 1){ scene.remove(z.g); z.mo.dispose(); z.mi.dispose(); ZAPS.splice(i,1); continue; }
@@ -3159,8 +3198,8 @@ const CHARS = [
   {id:"barbitar", name:"BARBITAR", role:"Uomo scimmia", color:"#f0a060", hp:2800, spd:5.2, reload:1.2, superNeed:6800,
    atk:["Barbata", "allunga la barba e la usa come una frusta: colpisce tutti gli zombie in linea fino a 6,5 m e li respinge"], sup:["Peluria Roteante", "per 5 secondi gira su se stesso con la barba lunghissima, facendo danni continui a tutto ciò che c'è attorno"],
    build:buildBarbitar, aim:{type:"line", range:6.5, ring:0}, superRing:3.4, attack:atkBarbitar, super:supBarbitar},
-  {id:"kenz", name:"ELETTROKENZ", role:"Ti fulmina con lo sguardo", color:"#b04dff", hp:2300, spd:5.4, reload:1.15, superNeed:6200,
-   atk:["Occhiataccia", "spara una scarica viola dagli occhi fino a 10 m: colpisce il primo zombie e rimbalza su quello più vicino"], sup:["Kenzocalisse", "lancia un grappolo di fulmini dagli occhi che avanza lentamente per 4,5 secondi, folgorando e rallentando tutti gli zombie che incontra"],
+  {id:"kenz", name:"ELETTROSKENZ", role:"Petto elettrico", color:"#b04dff", hp:2300, spd:5.4, reload:1.15, superNeed:6200,
+   atk:["Tettaser", "spara due scariche viola dai capezzoli fino a 10 m: colpisce il primo zombie e rimbalza su quello più vicino"], sup:["Kenzocalisse", "lancia un grappolo di fulmini dai capezzoli che avanza lentamente per 4,5 secondi, folgorando e rallentando tutti gli zombie che incontra"],
    build:buildKenz, aim:{type:"line", range:10.5, ring:0}, superRing:0, attack:atkKenz, super:supKenz}
 ];
 
@@ -3184,6 +3223,12 @@ function nearestZombie(maxD){
   return best;
 }
 function autoFire(){
+  if(povActive()){
+    const f = povFwd(), R = C.aim.range + (C.aim.ring || 0)*.6; let best = null, bs = .42;
+    for(const z of zombies){ if(z.dead || z.rise < 1) continue; const dx = z.g.position.x - hero.position.x, dz = z.g.position.z - hero.position.z, d = Math.hypot(dx, dz); if(d > R || d < .1) continue; const a = Math.acos(Math.max(-1, Math.min(1, (dx*f.x + dz*f.z)/d))); if(a < bs){ bs = a; best = z; } }
+    if(best){ const v = new T.Vector3(best.g.position.x-hero.position.x, 0, best.g.position.z-hero.position.z); fire(v, v.length(), best); } else fire(f, povDist());
+    return;
+  }
   const best = nearestZombie(C.aim.range + (C.aim.ring || 0)*.6);
   if(best){ const v = new T.Vector3(best.g.position.x-hero.position.x, 0, best.g.position.z-hero.position.z); fire(v, v.length(), best); }
   else fire(faceDir.clone(), C.aim.range);
@@ -3193,6 +3238,7 @@ function trySuper(odir, odist){
   lastShot = time;
   charge = 0;
   const dir = faceDir.clone(); let dist = 6;
+  if(!odir && povActive()){ odir = povFwd(); odist = povDist(); }
   if(odir){ dir.copy(odir); dist = odist || 6; }
   else if(!touchUsed && mouseIn){ dir.set(aimPoint.x-hero.position.x, 0, aimPoint.z-hero.position.z); dist = dir.length(); }
   else { const z = nearestZombie(9); if(z){ dir.set(z.g.position.x-hero.position.x, 0, z.g.position.z-hero.position.z); dist = dir.length(); } }
@@ -3306,9 +3352,19 @@ canvas.addEventListener("pointermove", e => {
   mouseIn = true; ndc.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
 });
 canvas.addEventListener("pointerleave", () => { mouseIn = false; });
+document.addEventListener("mousemove", e => {
+  if(document.pointerLockElement !== canvas || camMode !== "pov" || userPause) return;
+  camYaw -= e.movementX*.0024; camPitch = Math.max(-1, Math.min(.45, camPitch - e.movementY*.0024));
+  mouseIn = true; ndc.set(0, 0);
+});
 canvas.addEventListener("pointerdown", e => {
   if(e.pointerType !== "mouse" || state !== "play") return;
   audio();
+  if(povActive()){
+    if(document.pointerLockElement !== canvas){ try{ canvas.requestPointerLock(); }catch(_){} }
+    if(e.button === 2){ trySuper(povFwd(), povDist()); return; }
+    fire(povFwd(), povDist()); return;
+  }
   if(e.button === 2){ trySuper(); return; }
   const v = new T.Vector3(aimPoint.x-hero.position.x, 0, aimPoint.z-hero.position.z);
   fire(v, v.length());
@@ -3337,12 +3393,12 @@ const endMove = e => { if(e.pointerId !== moveId) return; moveId = null; base.hi
 zone.addEventListener("pointerup", endMove); zone.addEventListener("pointercancel", endMove);
 
 const camZone = $("#camZone"); let camId = null, camLX = 0;
-let tapX = 0, tapY = 0, tapT = 0, tapMoved = false;
-camZone.addEventListener("pointerdown", e => { if(camId !== null) return; camId = e.pointerId; camDrag = true; camLX = e.clientX; tapX = e.clientX; tapY = e.clientY; tapT = performance.now(); tapMoved = false; try{ camZone.setPointerCapture(e.pointerId); }catch(_){} });
-camZone.addEventListener("pointermove", e => { if(e.pointerId !== camId) return; if(Math.hypot(e.clientX - tapX, e.clientY - tapY) > 12) tapMoved = true; if(camMode === "gta" || inPlace) camYaw -= (e.clientX - camLX)*.0075; camLX = e.clientX; });
+let tapX = 0, tapY = 0, tapT = 0, tapMoved = false, camLY = 0;
+camZone.addEventListener("pointerdown", e => { if(camId !== null) return; camId = e.pointerId; camDrag = true; camLX = e.clientX; camLY = e.clientY; tapX = e.clientX; tapY = e.clientY; tapT = performance.now(); tapMoved = false; try{ camZone.setPointerCapture(e.pointerId); }catch(_){} });
+camZone.addEventListener("pointermove", e => { if(e.pointerId !== camId) return; if(Math.hypot(e.clientX - tapX, e.clientY - tapY) > 12) tapMoved = true; if(camMode === "gta" || camMode === "pov" || inPlace) camYaw -= (e.clientX - camLX)*(camMode === "pov" ? .006 : .0075); if(camMode === "pov") camPitch = Math.max(-1, Math.min(.45, camPitch - (e.clientY - camLY)*.005)); camLX = e.clientX; camLY = e.clientY; });
 const endCam = e => { if(e.pointerId !== camId) return; camId = null; camDrag = false; if(!tapMoved && performance.now() - tapT < 320) handleTap(e.clientX, e.clientY); };
 camZone.addEventListener("pointerup", endCam); camZone.addEventListener("pointercancel", endCam);
-const toggleCam = () => { camMode = camMode === "gta" ? "top" : "gta"; try{ localStorage.setItem("zt-cam", camMode); }catch(_){} applyCamMode(); };
+const toggleCam = () => { camMode = camMode === "gta" ? "top" : camMode === "top" ? "pov" : "gta"; try{ localStorage.setItem("zt-cam", camMode); }catch(_){} applyCamMode(); };
 $("#camBtn").addEventListener("click", toggleCam);
 $("#camBtn2").addEventListener("click", toggleCam);
 const atk = $("#atk"), atkKnob = $("#atkKnob");
@@ -3541,7 +3597,7 @@ function startGame(){
   placeBox();
   power = false; for(const gn of GENS) setGen(gn, false); for(const tr of TRAPS){ tr.t = 0; tr.cd = 0; }
   userPause = false; $("#pauseScr").hidden = true; BARB.splice(0).forEach(b => endBarb(b, true)); barbSpinT = 0; STORMS.splice(0).forEach(st => scene.remove(st.g)); kenzLev = 0; kenzStill = 0;
-  camYaw = Math.PI; heroMoving = false; setTimeout(resize, 0);
+  camYaw = Math.PI; camPitch = -.12; heroMoving = false; setTimeout(resize, 0);
   pickWeather(); later(1.8, () => { if(state === "play") showBanner("METEO: " + weather.name); });
   upg = 0; dblT = dmgBoostT = rapidT = invT = 0; earned = 0; boxT = 0; clone4Told = false; $("#overNote").hidden = true;
   for(const Z of ZONES) if(Z.gate) setGate(Z, false);
@@ -3804,7 +3860,7 @@ function updateZombies(dt){
     z.slowT -= dt;
     if(z.psn > 0){
       z.psn -= dt; z.psnTick -= dt;
-      if(z.psnTick <= 0){ z.psnTick += .5; botHit = !!z.psnBot; statOwner = z.psnOwn || null; damageZombie(z, z.psnDps*.5, false, 0, 0, "psn"); botHit = false; statOwner = null; if(z.dead) continue; }
+      if(z.psnTick <= 0){ z.psnTick += .5; botHit = !!z.psnBot; statOwner = z.psnOwn || null; remoteHit = z.psnRem || null; damageZombie(z, z.psnDps*.5, false, 0, 0, "psn"); botHit = false; statOwner = null; remoteHit = null; if(z.dead) continue; }
       if(Math.random() < dt*5) particle(p.x+(Math.random()-.5)*.6, 1.4*d.s, p.z+(Math.random()-.5)*.6, 0, 1, 0, .6, .15, .35, 0x9cff3a, .8);
     }
     let tgt = state === "play" && !heroDown && !heroTomb ? "hero" : null, hx = hero.position.x, hz = hero.position.z, ty = hero.position.y;
@@ -3906,7 +3962,7 @@ let hudCache = "";
 function updateHUD(){
   heroHud.position.set(hero.position.x, 2.95 + HP.body.position.y + hero.position.y + HP.pose.position.y, hero.position.z);
   heroHud.quaternion.copy(camera.quaternion);
-  heroHud.visible = state === "play";
+  heroHud.visible = state === "play" && !povActive();
   const r = hpNow/heroMax();
   heroBar.set(r); heroBar.fill.material.color.setHex(r < 0.3 ? 0xff4d5e : 0x8fff3a);
   { const na = maxAmmo(), w = 1.35/na; ammoBars.forEach((b,i) => { b.grp.visible = i < na; if(i >= na) return; b.grp.position.x = -0.675 + w*(i + .5); b.grp.scale.x = (w - .06)/.39; const f = Math.max(0, Math.min(1, ammo-i)); b.set(f); b.fill.material.color.setHex(f >= 1 ? 0xffad33 : 0x8a5a22); }); }
@@ -3927,15 +3983,20 @@ function updateHUD(){
 }
 
 let camMode = "gta", camYaw = Math.PI, camDrag = false, heroMoveX = 0, heroMoveZ = 0, heroMoving = false;
-try{ camMode = localStorage.getItem("zt-cam") === "top" ? "top" : "gta"; }catch(_){}
+let camPitch = -.12, povHidden = false;
+try{ const v = localStorage.getItem("zt-cam"); camMode = v === "top" || v === "pov" ? v : "gta"; }catch(_){}
+function povActive(){ return camMode === "pov" && state === "play" && !heroDown && !heroTomb && !!HP; }
+function povFwd(){ return new T.Vector3(Math.sin(camYaw), 0, Math.cos(camYaw)); }
+function povDist(){ const r = C.aim.range; return camPitch < -.06 ? Math.max(2.5, Math.min(r, 1.7/Math.tan(-camPitch))) : r; }
 function camRel(x, z){
-  if((camMode !== "gta" && !inPlace) || state === "menu") return [x, z];
+  if((camMode === "top" && !inPlace) || state === "menu") return [x, z];
   const fx = Math.sin(camYaw), fz = Math.cos(camYaw), rx = -fz, rz = fx;
   return [rx*x - fx*z, rz*x - fz*z];
 }
 function applyCamMode(){
   document.body.dataset.cam = camMode;
-  const t = "Visuale: " + (camMode === "gta" ? "GTA" : "dall'alto");
+  const t = "Visuale: " + (camMode === "gta" ? "GTA" : camMode === "pov" ? "POV (prima persona)" : "dall'alto");
+  if(camMode !== "pov" && document.pointerLockElement){ try{ document.exitPointerLock(); }catch(_){} }
   const b = $("#camBtn"); if(b) b.textContent = t;
   if(typeof resize === "function") resize();
 }
@@ -3949,6 +4010,13 @@ function updateCamera(dt){
       wantPos.set(dx, ly + .35, d); wantLook.set(dx, ly, 0);
     }
     else { wantPos.set(0, 1.8, 5.6); wantLook.set(0, 1.1, 0); }
+  } else if(povActive()){
+    if(input.keys.KeyQ) camYaw += dt*2.2; if(input.keys.KeyR) camYaw -= dt*2.2;
+    const fx = Math.sin(camYaw), fz = Math.cos(camYaw), cp = Math.cos(camPitch), sp = Math.sin(camPitch);
+    const ey = hero.position.y + (HP.pose ? HP.pose.position.y : 0) + 1.72;
+    wantPos.set(hero.position.x + fx*.18, ey, hero.position.z + fz*.18);
+    wantLook.set(wantPos.x + fx*cp*6, ey + sp*6, wantPos.z + fz*cp*6);
+    if(!heroAct && faceLock <= 0){ hero.rotation.y = camYaw; faceDir.set(fx, 0, fz); }
   } else if(inPlace){
     if(state === "play" && heroMoving && !camDrag){
       const want = Math.atan2(heroMoveX, heroMoveZ); let d = want - camYaw;
@@ -3977,7 +4045,19 @@ function updateCamera(dt){
     wantPos.set(hero.position.x+off[0], off[1] + hero.position.y, hero.position.z+off[2]);
     wantLook.set(hero.position.x, 0.6 + hero.position.y, hero.position.z - (a < 0.8 ? 1.2 : 0.4));
   }
-  const k = 1 - Math.exp(-dt*(state === "menu" ? 3 : inPlace ? 10 : camMode === "gta" ? 9 : 6));
+  const pv = povActive();
+  if(HP && HP.pose){ if(pv){ HP.pose.visible = false; povHidden = true; } else if(povHidden){ HP.pose.visible = true; povHidden = false; } }
+  { const xh = $("#xhair"); if(xh) xh.hidden = !pv; }
+  { const ph = $("#povHud"); if(ph){ ph.hidden = !pv; if(pv){
+      const r = Math.max(0, Math.min(1, hpNow/heroMax())), na = maxAmmo();
+      const hf = $("#povHp"); hf.style.width = (r*100).toFixed(1) + "%"; hf.style.background = r < .3 ? "#ff4d5e" : "#8fff3a";
+      $("#povHpTxt").textContent = Math.ceil(hpNow);
+      const key = na + "|" + Math.floor(ammo) + "|" + Math.round((ammo - Math.floor(ammo))*10);
+      if(key !== ph._k){ ph._k = key; let h = ""; for(let i = 0; i < na; i++){ const f = Math.max(0, Math.min(1, ammo - i)); h += '<i style="opacity:' + (f >= 1 ? 1 : .25 + .5*f).toFixed(2) + '"></i>'; } $("#povAmmo").innerHTML = h; }
+      $("#povSup").style.width = (Math.min(1, charge)*100).toFixed(1) + "%"; ph.classList.toggle("ready", charge >= 1);
+  } } }
+  if(!pv && document.pointerLockElement && camMode === "pov" && state !== "play"){ try{ document.exitPointerLock(); }catch(_){} }
+  const k = pv ? 1 : 1 - Math.exp(-dt*(state === "menu" ? 3 : inPlace ? 10 : camMode === "gta" ? 9 : 6));
   camPos.lerp(wantPos, k); camLook.lerp(wantLook, k);
   camera.position.copy(camPos);
   if(shake > 0 && !reduceMotion){ camera.position.x += (Math.random()-.5)*shake; camera.position.y += (Math.random()-.5)*shake; }
@@ -4039,7 +4119,7 @@ function onHeroKill(){
 /* ---------- Tratti (Star Power) ---------- */
 const TRAIT_COST = [6000, 9000, 12000];
 const TRAITS = {
-  kenz:[{id:"sguardo", name:"SGUARDO KENZICO", desc:"L'occhiataccia fa il 35% di danni in più, la Kenzocalisse il 20%"}, {id:"catena", name:"POKENZA MASSIMA", desc:"La scarica rimbalza su 3 zombie invece di 1 e la Kenzocalisse è più larga"}, {id:"zen", name:"KENZITAZIONE", desc:"Se stai fermo a meditare, la super si carica il 60% più veloce"}],
+  kenz:[{id:"sguardo", name:"CAPEZZOLO KENZICO", desc:"Il Tettaser fa il 35% di danni in più, la Kenzocalisse il 20%"}, {id:"catena", name:"POKENZA MASSIMA", desc:"La scarica rimbalza su 3 zombie invece di 1 e la Kenzocalisse è più larga"}, {id:"zen", name:"KENZITAZIONE", desc:"Se stai fermo a meditare, la super si carica il 60% più veloce"}],
   barbitar:[{id:"acciaio", name:"BARBOSA POWER", desc:"La barbata fa il 40% di danni in più"}, {id:"lunga", name:"PELURIA INFINITA", desc:"Barbata +35% di gittata, Peluria Roteante +30% di raggio"}, {id:"pelliccia", name:"PELLICCIA ANTIPROIETTILE", desc:"Durante la Peluria Roteante subisci il 50% di danni in meno"}],
   sbanfatar:[{id:"nube", name:"NUBE DENSA", desc:"Le nubi tossiche durano 1 secondo in più"}, {id:"fuoco", name:"ANELLO DI FUOCO", desc:"La super lascia una scia di fuoco a terra"}, {id:"rush", name:"FURIA", desc:"Ogni uccisione +1% velocità (fino a +20%)"}],
   gavettone:[{id:"perfora", name:"PILLOLE PERFORANTI", desc:"I colpi attraversano gli zombie"}, {id:"raffica", name:"RAFFICA", desc:"Ogni 10 uccisioni ricarica istantanea"}, {id:"medico", name:"MEDICO DA CAMPO", desc:"La super cura il doppio"}],
@@ -4669,7 +4749,7 @@ function updateIndoor(dt){
     if(inPlace){ const b = inPlace.b, [x, z] = bWorld(b, 0, b.D*.55), fl = (inPlace.lv - 1)*FH; roomL.color.setHex(ROOM_COL[b.name] || 0xffaa44); roomL.distance = 17; roomL.position.set(x, fl + FH - .6, z); roomL.intensity = (Math.random() < .035 ? .45 : 1.3)*inK; }
   }
   const ab = ac ? abus() : null; if(ab){ const t = ac.currentTime; ab.lp.frequency.setTargetAtTime(inPlace ? 650 : 18000, t, .25); ab.wet.gain.setTargetAtTime(inPlace ? .35 : 0, t, .3); }
-  const tf = inPlace ? 72 : baseFov; if(Math.abs(camera.fov - tf) > .05){ camera.fov += (tf - camera.fov)*Math.min(1, dt*4); camera.updateProjectionMatrix(); }
+  const tf = inPlace && camMode !== "pov" ? 72 : baseFov; if(Math.abs(camera.fov - tf) > .05){ camera.fov += (tf - camera.fov)*Math.min(1, dt*4); camera.updateProjectionMatrix(); }
   if(inPlace && state === "play" && !userPause){
     woodT -= dt;
     if(woodT <= 0){
@@ -5426,6 +5506,7 @@ function netRecv(from, m){
     else if(t === "snap"){ if(state !== "menu") netApplySnap(m); }
     else if(t === "fx") netRunFx(m);
     else if(t === "kill"){ addPts(m.p); kills++; onHeroKill(); }
+    else if(t === "ast"){ addPts(m.p); ST.ast = (ST.ast || 0) + 1; if(state === "play") assistText(hero.position, m.p); }
     else if(t === "hurt"){ if(mirrorT <= 0) hurtHero(m.amt); }
     else if(t === "drop"){ applyDrop(m.k); }
     else if(t === "rev"){ if(heroDown) reviveHero(); }
@@ -5771,6 +5852,7 @@ function renderPause(){
   $("#pauseInfo").textContent = "Ondata " + wave + " · " + points.toLocaleString("it-IT") + " punti · Meteo: " + weather.name.toLowerCase() + (power ? " · corrente attiva" : " · generatori " + GENS.filter(g => g.on).length + "/2");
 }
 function setPause(on, tab){
+  if(on && document.pointerLockElement){ try{ document.exitPointerLock(); }catch(_){} }
   if(on && state !== "play") return;
   if(NET.mode && NET.started && !NET.rxPause) netTx(NET.mode === "host" ? "all" : "h", {t:"pause", on});
   if(tab) pauseTab = tab; else if(on) pauseTab = "stats";
@@ -5792,7 +5874,7 @@ function resize(){
   $("#rotate").hidden = !portraitPhone;
   paused = portraitPhone;
   renderer.setSize(W, H, false);
-  camera.aspect = W/H; baseFov = camMode === "gta" && state !== "menu" ? (camera.aspect < 0.8 ? 72 : 60) : camera.aspect < 0.8 ? 50 : camera.aspect > 1.8 ? 42 : 45; camera.fov = inK > .5 ? camera.fov : baseFov; camera.updateProjectionMatrix();
+  camera.aspect = W/H; baseFov = camMode === "pov" && state !== "menu" ? (camera.aspect < 0.8 ? 85 : 75) : camMode === "gta" && state !== "menu" ? (camera.aspect < 0.8 ? 72 : 60) : camera.aspect < 0.8 ? 50 : camera.aspect > 1.8 ? 42 : 45; camera.fov = inK > .5 ? camera.fov : baseFov; camera.updateProjectionMatrix();
 }
 addEventListener("resize", resize); addEventListener("orientationchange", () => setTimeout(resize, 120)); resize();
 
